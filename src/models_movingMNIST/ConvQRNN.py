@@ -1,15 +1,15 @@
 import torch
 import torch.nn as nn
-from QRNN_cell import QRNNCell
+from .ConvQRNNCell import QRNNCell
 
 # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-class QRNN(nn.Module):
+class ConvQRNN(nn.Module):
 
     def __init__(self, in_channels, out_channels, 
     kernel_size, padding, activation, frame_size):
 
-        super(QRNN, self).__init__()
+        super(ConvQRNN, self).__init__()
 
         self.out_channels = out_channels
 

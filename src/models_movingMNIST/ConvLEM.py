@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from ConvLEMCell_1 import ConvLEMCell
+from .ConvLEMCell import ConvLEMCell
 
 #device = torch.device('cuda:6' if torch.cuda.is_available() else 'cpu') 
 

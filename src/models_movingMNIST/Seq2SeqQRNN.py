@@ -1,19 +1,19 @@
 import torch.nn as nn
 import torch
-from ConvLSTM import ConvLSTM
+from .ConvQRNN import ConvQRNN
 
-class Seq2SeqLSTM(nn.Module):
+class Seq2SeqQRNN(nn.Module):
 
     def __init__(self, num_channels, num_kernels, kernel_size, padding, 
     activation, frame_size, num_layers):
 
-        super(Seq2SeqLSTM, self).__init__()
+        super(Seq2SeqQRNN, self).__init__()
 
         self.sequential = nn.Sequential()
 
         # Add First layer (Different in_channels than the rest)
         self.sequential.add_module(
-            "convlem1", ConvLSTM(
+            "convQRNN1", QRNN(
                 in_channels=num_channels, out_channels=num_kernels,
                 kernel_size=kernel_size, padding=padding, 
                 activation=activation, frame_size=frame_size)
@@ -27,7 +27,7 @@ class Seq2SeqLSTM(nn.Module):
         for l in range(2, num_layers+1):
 
             self.sequential.add_module(
-                f"convlem{l}", ConvLSTM(
+                f"convQRNN{l}", QRNN(
                     in_channels=num_kernels, out_channels=num_kernels,
                     kernel_size=kernel_size, padding=padding, 
                     activation=activation, frame_size=frame_size)
