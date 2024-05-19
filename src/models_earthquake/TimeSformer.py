@@ -358,7 +358,7 @@ class VisionTransformer(nn.Module):
         if self.attention_type == 'space_only':
             x = rearrange(x, '(b t) n m -> b t n m',b=B,t=T)
             x = torch.mean(x, 1) # averaging predictions for every frame
-        # x = self.norm(x)
+            
         x = rearrange(x, 'b (h w t) m -> (b t) m h w', h=H,w=W,t=T)
         return x
     
