@@ -4,9 +4,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 import h5py
-import Validation
-
-from models_RBC import AEConvLEM, AEConvLSTM, AEConvQRNN, Validation
+from src.models_RBC._init_ import AEConvLEM, AEConvLSTM, AEConvQRNN, Validation, Validation
 import argparse
 parser = argparse.ArgumentParser(description='Learn Moving MNIST', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('--model', type=str, default='LEM', choices=['LEM', 'LSTM', 'QRNN'], help='Choose architecture.')

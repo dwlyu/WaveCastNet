@@ -516,7 +516,7 @@ class SwinTransformer3D_eq(nn.Module):
                  embed_dim=96,
                  depths=[2, 6, 6, 2],
                  num_heads=[6, 12, 12, 6],
-                 window_size=(2,12,6),
+                 window_size=(2,6,6),
                  mlp_ratio=4.,
                  qkv_bias=True,
                  qk_scale=None,
