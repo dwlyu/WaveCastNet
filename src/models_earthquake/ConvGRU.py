@@ -1,10 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.init as init
-from EncoderDecoder import encoder2
-from EncoderDecoder import decoder3
-from EncoderDecoder import encoder1
-from EncoderDecoder import decoder2_48
+from .EncoderDecoder import encoder2
+from .EncoderDecoder import decoder3
 
 class ConvGRU_Cell(nn.Module):
     def __init__(self, in_channels, out_channels, 

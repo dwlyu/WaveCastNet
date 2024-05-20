@@ -7,6 +7,4 @@ from .ConvGRU import AEConvGRU
 from .TimesFormer_plain import VisionTransformer
 from .TimeSformer import Timesformer_eq
 from .SwinTransformer import SwinTransformer3D_eq
-import Validation_pixel
 from .Sequenceloader import getsequenceData
-from .Sequenceloader_uq import getsequenceData_uq

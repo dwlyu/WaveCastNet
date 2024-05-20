@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 import numpy as np
-from ConvLEMCell import ConvLEMCell_1
-from EncoderDecoder import encoder2
-from EncoderDecoder import decoder3
+from .ConvLEMCell import ConvLEMCell_1
+from .EncoderDecoder import encoder2
+from .EncoderDecoder import decoder3
 import torch.nn.init as init
 
 # Seq2Seq(ConvLEM) for Ablation study on (H/4, W/4)

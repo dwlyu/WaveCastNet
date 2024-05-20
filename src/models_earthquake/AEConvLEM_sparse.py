@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 import numpy as np
-from ConvLEMCell import ConvLEMCell_1
-from EncoderDecoder import decoder2_48
-from EncodingSparse import Encoder1d
+from .ConvLEMCell import ConvLEMCell_1
+from .EncoderDecoder import decoder2_48
+from .EncodingSparse import Encoder1d
 
 # Seq2Seq(ConvLEM) for sparse sampling scenarios
 

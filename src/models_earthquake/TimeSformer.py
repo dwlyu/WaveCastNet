@@ -11,29 +11,10 @@ import warnings
 import torch.nn.functional as F
 import numpy as np
 
-from vit_utils import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
-from vit_utils import DropPath, to_2tuple, trunc_normal_,to_3tuple
+from .vit_utils import DropPath, to_2tuple, trunc_normal_,to_3tuple
 
 from torch import einsum
 from einops import rearrange, reduce, repeat
-
-def _cfg(url='', **kwargs):
-    return {
-        'url': url,
-        'num_classes': 1000, 'input_size': (3, 224, 224), 'pool_size': None,
-        'crop_pct': .9, 'interpolation': 'bicubic',
-        'mean': IMAGENET_DEFAULT_MEAN, 'std': IMAGENET_DEFAULT_STD,
-        'first_conv': 'patch_embed.proj', 'classifier': 'head',
-        **kwargs
-    }
-
-
-default_cfgs = {
-    'vit_base_patch16_224': _cfg(
-        url='https://github.com/rwightman/pytorch-image-models/releases/download/v0.1-vitjx/jx_vit_base_p16_224-80ecf9dd.pth',
-        mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5),
-    ),
-}
 
 class Mlp(nn.Module):
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.):
@@ -249,6 +230,8 @@ class VisionTransformer(nn.Module):
             self.patch_embed = PatchEmbed(
                 img_size=img_size, patch_size=patch_size, in_chans=in_chans, embed_dim=embed_dim)
         num_patches = (img_size[1]//patch_size[1]) * (img_size[2]//patch_size[2])
+        self.factor1 = img_size[1]//patch_size[1]
+        self.factor2 = img_size[2]//patch_size[2]
         ## Positional Embeddings
         if is_position:
             self.pos_embed = nn.Parameter(torch.zeros(1, num_patches, embed_dim))
@@ -318,10 +301,9 @@ class VisionTransformer(nn.Module):
             ## resizing the positional embeddings in case they don't match the input at inference
             if x.size(1) != self.pos_embed.size(1):
                 pos_embed = self.pos_embed
-                H = self.pos_embed.size(1) // W
                 other_pos_embed = pos_embed[0,:,:].unsqueeze(0).transpose(1, 2)
                 P = int(other_pos_embed.size(2) ** 0.5)
-                other_pos_embed = other_pos_embed.reshape(1, x.size(2), H, W)
+                other_pos_embed = other_pos_embed.reshape(1, x.size(2), self.factor1, self.factor2)
                 H = x.size(1) // W
                 new_pos_embed = F.interpolate(other_pos_embed, size=(H, W), mode='nearest')
                 new_pos_embed = new_pos_embed.flatten(2)

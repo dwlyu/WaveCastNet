@@ -2,7 +2,7 @@ import torch
 import math
 from torch import nn
 from torch.nn import functional as F
-from EncoderDecoder import encoder_sparser
+from .EncoderDecoder import encoder_sparser
 import numpy as np
 
 class SelfAttention(nn.Module):
