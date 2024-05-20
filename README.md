@@ -8,11 +8,14 @@ python WaveCastNet/earthquake_train.py --model LEM_sparse --num_kernels 144 --ac
 ```
 python /global/homes/d/dwlyu/WaveCastNet/earthquake_train.py --model LEM_dense --num_kernels 144 --activation tanh --batch_size 64 --learning_rate 5e-4 --training_uq 1 --load_seed 2
 ```
-### Ablation Studies
+### Ablation Studies for RNN
 ```
 python WaveCastNet/earthquake_train.py --model LEM --num_kernels 144 --activation tanh --batch_size 64 --learning_rate 5e-4
 python WaveCastNet/earthquake_train.py --model LSTM --num_kernels 144 --activation tanh --batch_size 64 --learning_rate 5e-4
 python WaveCastNet/earthquake_train.py --model GRU --num_kernels 144 --activation tanh --batch_size 64 --learning_rate 5e-4
+```
+### Comparative Studies with Vision Transformers
+```
 python WaveCastNet/earthquake_train.py --model Swin --num_kernels 144 --patch_size 3 4 4 --batch_size 64 --learning_rate 5e-4
 python WaveCastNet/earthquake_train.py --model Time-s-pyramid --num_kernels 192 --patch_size 1 8 8 --batch_size 64 --learning_rate 5e-4
 python WaveCastNet/earthquake_train.py --model Time-s-plain --num_kernels 192 --patch_size 1 8 8 --batch_size 64 --learning_rate 5e-4
