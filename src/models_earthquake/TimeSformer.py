@@ -372,6 +372,7 @@ class Timesformer_eq(nn.Module):
         self.patch_size = patch_size
         self.pos_drop = nn.Dropout(p=drop_rate)
         num_frames = img_size[0]//patch_size[0]
+        self.num_frames = num_frames
 
         # stochastic depth
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))]  # stochastic depth decay rule
@@ -383,12 +384,14 @@ class Timesformer_eq(nn.Module):
                  drop_path_rate=drop_path_rate, norm_layer=nn.LayerNorm, num_frames=num_frames, attention_type=attention_type,
                  is_embed=True,is_position=True)
         
-        self.layer2 = VisionTransformer(img_size=img_size, patch_size=patch_size, in_chans=in_chans, embed_dim= 2 * embed_dim, depth=depths[1],
+        # Image size and patch size are not utilized if both is_embed and is_position are False, we change the parameters here for better understanding.
+        
+        self.layer2 = VisionTransformer(img_size=(img_size[0]//patch_size[0],img_size[1]//(2*patch_size[1]), img_size[2]//(2*patch_size[2])), patch_size=(1,1,1), in_chans=in_chans, embed_dim= 2 * embed_dim, depth=depths[1],
                  num_heads=num_heads[1], mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, qk_scale=qk_scale, drop_rate=drop_rate, attn_drop_rate=attn_drop_rate,
                  drop_path_rate=drop_path_rate, norm_layer=nn.LayerNorm, num_frames=num_frames, attention_type=attention_type,
                  is_embed=False,is_position=False)
         
-        self.layer3 = VisionTransformer(img_size=img_size, patch_size=patch_size, in_chans=in_chans, embed_dim= 2 * embed_dim, depth=depths[2],
+        self.layer3 = VisionTransformer(img_size=(img_size[0]//patch_size[0],img_size[1]//(2*patch_size[1]), img_size[2]//(2*patch_size[2])), patch_size=(1,1,1), in_chans=in_chans, embed_dim= 2 * embed_dim, depth=depths[2],
                  num_heads=num_heads[2], mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, qk_scale=qk_scale, drop_rate=drop_rate, attn_drop_rate=attn_drop_rate,
                  drop_path_rate=drop_path_rate, norm_layer=nn.LayerNorm, num_frames=num_frames, attention_type=attention_type,
                  is_embed=False,is_position=False)
