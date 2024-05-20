@@ -152,7 +152,7 @@ class VisionTransformer(nn.Module):
     """
     def __init__(self, img_size=(60,80,56), patch_size=(2,4,4), in_chans=3, embed_dim=192, depth=16,
                  num_heads=8, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop_rate=0., attn_drop_rate=0.,
-                 drop_path_rate=0.1, norm_layer=nn.LayerNorm, num_frames=30, attention_type='divided_space_time', dropout=0.):
+                 drop_path_rate=0.1, norm_layer=nn.LayerNorm,attention_type='divided_space_time', dropout=0.):
         super().__init__()
         self.attention_type = attention_type
         self.depth = depth
@@ -161,6 +161,7 @@ class VisionTransformer(nn.Module):
         self.patch_embed = PatchEmbed(
             img_size=img_size, patch_size=patch_size, in_chans=in_chans, embed_dim=embed_dim)
         num_patches = (img_size[1]//patch_size[1]) * (img_size[2]//patch_size[2])
+        num_frames = img_size[0]//patch_size[0]
         self.factor1 = img_size[1]//patch_size[1]
         self.factor2 = img_size[2]//patch_size[2]
         self.reverse = nn.ConvTranspose3d(2 * embed_dim, in_chans, kernel_size=patch_size, stride=patch_size)  

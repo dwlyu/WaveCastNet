@@ -236,7 +236,7 @@ class VisionTransformer(nn.Module):
         if is_position:
             self.pos_embed = nn.Parameter(torch.zeros(1, num_patches, embed_dim))
             if self.attention_type != 'space_only':
-                self.time_embed = nn.Parameter(torch.zeros(1, num_frames, embed_dim))
+                self.time_embed = nn.Parameter(torch.zeros(1, self.num_frame, embed_dim))
                 self.time_drop = nn.Dropout(p=drop_rate)
         
         self.pos_drop = nn.Dropout(p=drop_rate)
@@ -364,7 +364,6 @@ class Timesformer_eq(nn.Module):
                  attn_drop_rate=0.,
                  drop_path_rate=0.1,
                  norm_layer=nn.LayerNorm,
-                 num_frames=60,
                  attention_type='divided_space_time'):
         super().__init__()
 
@@ -372,7 +371,7 @@ class Timesformer_eq(nn.Module):
         self.embed_dim = embed_dim
         self.patch_size = patch_size
         self.pos_drop = nn.Dropout(p=drop_rate)
-        self.num_frames = num_frames
+        num_frames = img_size[0]//patch_size[0]
 
         # stochastic depth
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))]  # stochastic depth decay rule
