@@ -8,7 +8,7 @@ python WaveCastNet/earthquake_train.py --model LEM_sparse --num_kernels 144 --ac
 ```
 python /global/homes/d/dwlyu/WaveCastNet/earthquake_train.py --model LEM_dense --num_kernels 144 --activation tanh --batch_size 64 --learning_rate 5e-4 --training_uq 1 --load_seed 2
 ```
-### Ablation Studies for RNN
+### Seq2Seq Ablation Studies
 ```
 python WaveCastNet/earthquake_train.py --model LEM --num_kernels 144 --activation tanh --batch_size 64 --learning_rate 5e-4
 python WaveCastNet/earthquake_train.py --model LSTM --num_kernels 144 --activation tanh --batch_size 64 --learning_rate 5e-4
