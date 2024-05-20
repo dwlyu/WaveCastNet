@@ -11,6 +11,7 @@ parser.add_argument('--model', type=str, default='LEM', choices=['LEM', 'LSTM', 
 parser.add_argument('--width', type=int, default=72, metavar='S', help='number of channels')
 parser.add_argument('--input_steps', type=int, default=20, metavar='S', help='input step size')
 parser.add_argument('--future_steps', type=int, default=10, metavar='S', help='predicted step size')
+parser.add_argument("--activation", type=str, default='tanh', choices=['tanh','relu'], help="Activation function")
 
 # Optimization options
 parser.add_argument('--epochs', type=int, default=200, help='Number of epochs to train.')
@@ -70,15 +71,15 @@ seed_everything(args.seed)
 
 if args.model == 'LEM':
     model = AEConvLEM(dt=1, num_channels=3, num_kernels=args.width, 
-    kernel_size=(3, 3), padding=(1, 1), activation="relu", 
+    kernel_size=(3, 3), padding=(1, 1), activation=args.activation, 
     frame_size=(32, 32)).to(device)
 if args.model == 'LSTM':
     model = AEConvLSTM(num_channels=3, num_kernels=args.width, 
-    kernel_size=(3, 3), padding=(1, 1), activation="relu", 
+    kernel_size=(3, 3), padding=(1, 1), activation=args.activation, 
     frame_size=(32, 32)).to(device)
 if args.model == 'QRNN':
     model = AEConvQRNN(num_channels=3, num_kernels=args.width, 
-    kernel_size=(3, 3), padding=(1, 1), activation="relu", 
+    kernel_size=(3, 3), padding=(1, 1), activation=args.activation, 
     frame_size=(32, 32)).to(device)
 
 
