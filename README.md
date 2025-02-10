@@ -59,13 +59,10 @@ python /global/homes/d/dwlyu/WaveCastNet/earthquake_train.py --model LEM_dense -
 
 ## Finite Fault Generalization
 <p align="center" width="100%">
-    <img width="60%" src='images/higher_m.png'>
+    <img width="29%" src='images/higher_m.png'>
+    <img width="68%" src='images/ablation.png'>
 </p>
-<b>Table 2:</b> Systematic evaluation on higher-magnitude finite-fault earthquakes.
-<p align="center" width="100%">
-    <img width="98%" src='images/ablation.png'>
-</p>
-<b>Table 3:</b> Performance comparison between seq2seq frameworks using different recurrent cells, and state-of-the-art transformers for forecasting small point-source earthquakes.
+<b>Table 2:</b> Systematic evaluation on higher-magnitude finite-fault earthquakes (Left). Performance comparison between seq2seq frameworks using different recurrent cells, and state-of-the-art transformers for forecasting small point-source earthquakes (Right).
 
 ### Seq2Seq Ablation Studies
 ```
