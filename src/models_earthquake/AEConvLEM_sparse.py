@@ -9,7 +9,7 @@ from .EncodingSparse import Encoder1d
 
 class AEConvLEM_sparse(nn.Module):
     def __init__(self, dt, num_channels, num_kernels, kernel_size, padding, 
-    activation, frame_size, return_dt=False):
+    activation, frame_size, mask_mode=False, mask_ratio=0, return_dt=False):
         super(AEConvLEM_sparse, self).__init__()
 
         """ ARCHITECTURE 
@@ -23,7 +23,7 @@ class AEConvLEM_sparse(nn.Module):
         self.out_channels = num_kernels
         self.returndt = return_dt #for producing dt and dt_bar histogram visualization 
         
-        self.encoder = Encoder1d() # Attaining and encoding sparse input
+        self.encoder = Encoder1d(mask_mode, mask_ratio) # Attaining and encoding sparse input
         self.decoder = decoder2_48(num_channel = num_channels)
         
         self.encoder_1_convlem = ConvLEMCell_1(dt = dt,
@@ -50,6 +50,8 @@ class AEConvLEM_sparse(nn.Module):
             in_channels=3 * num_channels, out_channels= num_channels,
             kernel_size=kernel_size, padding=padding)
         
+        self.mask_mode = mask_mode
+        
 
 
     def autoencoder(self, x, future_step, h_t, c_t, h_t2, c_t2, h_t3, c_t3, h_t4, c_t4):
@@ -60,9 +62,20 @@ class AEConvLEM_sparse(nn.Module):
         
         dt_all = []
         dt_bar_all = []
+        if self.mask_mode:
+            mask_sample = len(np.load('/global/homes/d/dwlyu/earthquake/filtered_coord.npy'))
+            space_only_mask = torch.rand(batch_size, mask_sample).to(x.device)
         for t in range(seq_len):
+
+            step_input = x[:,:,t]
+
+            if self.mask_mode:
+                    encode = self.encoder(step_input,space_only_mask = space_only_mask)
+            else:
+                    encode = self.encoder(step_input)
+
             if self.returndt:
-                h_t, c_t, dt, dt_bar = self.encoder_1_convlem(self.encoder(x[:,:,t]),
+                h_t, c_t, dt, dt_bar = self.encoder_1_convlem(encode,
                                               h_t,c_t)  # we could concat to provide skip conn here
                 h_t2, c_t2, dt2, dt_bar_2 = self.encoder_2_convlem(h_t,
                                                 h_t2, c_t2)
@@ -71,7 +84,7 @@ class AEConvLEM_sparse(nn.Module):
                 dt_bar_all.append(dt_bar)
                 # dt_bar_all.append(dt_bar_2)
             else:
-                h_t, c_t = self.encoder_1_convlem(self.encoder(x[:,:,t]),
+                h_t, c_t = self.encoder_1_convlem(encode,
                                               h_t,c_t)  # we could concat to provide skip conn here
                 h_t2, c_t2 = self.encoder_2_convlem(h_t,
                                                 h_t2, c_t2)
@@ -136,3 +149,4 @@ class AEConvLEM_sparse(nn.Module):
         outputs = self.autoencoder(x, future_seq, h_t, c_t, h_t2, c_t2, h_t3, c_t3, h_t4, c_t4)
 
         return outputs
+

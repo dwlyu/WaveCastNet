@@ -19,6 +19,9 @@ WaveCastNet is an AI-driven framework designed to forecast high-resolution wavef
 - **Comparative study against transformer-based models**
 - **Zero-shot generalization from synthetic data to real-world examples**
 
+### Data Availability
+<span style="color:blue"> TODO:</span> Details regarding data availability will be provided soon.
+
 ## Model Structure
 <p align="center" width="100%">
     <img width="54.28%" src='images/sparse_seq2seq.png'>

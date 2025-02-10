@@ -101,23 +101,33 @@ class Attention1D(nn.Module):
 
         x += residue
         return x
-
+    
 class Encoder1d(nn.Module):
-    def __init__(self):
+    def __init__(self, mask_mode=False, mask_ratio=0.3):
         super(Encoder1d,self).__init__()
-        self.Attention=Attention1D(3)
-        self.FC1=nn.Sequential(nn.Linear(564, 1204),#input feature 564
-                               nn.LeakyReLU(), 
-                               nn.BatchNorm1d(3))
+        # self.Attention=Attention1D(3)
+        self.mask_mode = mask_mode
+        self.mask_ratio = mask_ratio
+        self.input_len = len(np.load('/global/homes/d/dwlyu/earthquake/filtered_coord.npy'))
+        self.sample_list = np.load('/global/homes/d/dwlyu/earthquake/filtered_coord.npy')
+        self.FC1=nn.Sequential(nn.Linear(self.input_len, 1204),
+                            nn.LeakyReLU(), 
+                            nn.BatchNorm1d(3))
         
         self.FC2=nn.Sequential(nn.Linear(1204, 4816),
                                nn.LeakyReLU(), 
                                nn.BatchNorm1d(3))
-        
-        self.sample_list = np.load('src/models_earthquake/filtered_coord.npy') # Filtered coordinates on input snapshots
-        
         self.encoder = encoder_sparser(num_channel = 3)
-    
+        self.Attention=Attention1D(3)
+        
+    def mask(self,input,space_only_mask = None):
+        if self.mask_mode:
+            mask = space_only_mask.unsqueeze(1).expand_as(input) < self.mask_ratio
+            input = input.masked_fill(mask, 0)
+            return input
+        else:
+            return input
+            
     
     def irr_sample(self,input):
         inputlist = []
@@ -126,13 +136,15 @@ class Encoder1d(nn.Module):
         final_input = torch.stack(inputlist,dim=2)
         return final_input
 
-    def forward(self, x):
+    def forward(self, x, space_only_mask = None, train=True):
         n,c,h,w = x.shape
-        
-        sampled_x = self.irr_sample(x) # Attain sparse-sampled data points
-        
-        atten_x = self.Attention(sampled_x)
-        out = self.FC1(atten_x)
+        sampled_x = self.irr_sample(x)
+        if train:
+            if self.mask_mode:
+                sampled_x = self.mask(sampled_x,space_only_mask)
+            else:
+                sampled_x = self.Attention(sampled_x)
+        out = self.FC1(sampled_x)
         out = self.FC2(out)
         out = out.view((n,3,86,56))
         out = self.encoder(out)
