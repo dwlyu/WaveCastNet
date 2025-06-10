@@ -20,7 +20,16 @@ WaveCastNet is an AI-driven framework designed to forecast high-resolution wavef
 - **Zero-shot generalization from synthetic data to real-world examples**
 
 ### Data Availability
-<span style="color:blue"> TODO:</span> Details regarding data availability will be provided soon.
+
+The wavefield data can be accessed via [Google Drive](https://drive.google.com/drive/folders/10pe6Zc1NEzIunwJv80214dB9fmb-X8yw?usp=drive_link):
+
+- `all_input.npy`: Training data from 300 events (80%).
+- `{all_validation.npy, all_test.npy}`: Validation data from 45 events and test data from 30 events (20%).
+- `mean.npy`: Per-pixel mean of the training data for normalization.
+- `std.npy`: Per-pixel standard deviation of the training data for normalization.
+
+All data has been preprocessed, normalized per pixel, and cropped to remove boundary artifacts. Each sequence has a shape of $3 \times 344 \times 224 \times 461$ ($\text{Channel} \times H \times W \times \text{Seq\_len}$).
+
 
 ## Model Structure
 <p align="center" width="100%">
