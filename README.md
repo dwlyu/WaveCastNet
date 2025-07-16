@@ -21,14 +21,50 @@ WaveCastNet is an AI-driven framework designed to forecast high-resolution wavef
 
 ### Data Availability
 
-The wavefield data can be accessed via [Google Drive](https://drive.google.com/drive/folders/10pe6Zc1NEzIunwJv80214dB9fmb-X8yw?usp=drive_link):
+The wavefield data and pretrained checkpoints can be accessed via [Google Drive](https://drive.google.com/drive/folders/10pe6Zc1NEzIunwJv80214dB9fmb-X8yw?usp=drive_link):
 
 - `all_input.npy`: Training data from 300 events (80%).
 - `{all_validation.npy, all_test.npy}`: Validation data from 45 events and test data from 30 events (20%).
 - `mean.npy`: Per-pixel mean of the training data for normalization.
 - `std.npy`: Per-pixel standard deviation of the training data for normalization.
+- `best_lem_dense_.pt`: Pretrained checkpoint for dense input.
+- `best_lem_irr_mask_shakealert_.pt`: Pretrained checkpoint for models with sparse, irregular input and random encoder masking enabled.
 
-All data has been preprocessed, normalized per pixel, and cropped to remove boundary artifacts. Each sequence has a shape of $3 \times 344 \times 224 \times 461$ ($\text{Channel} \times H \times W \times \text{Seq\_len}$).
+All data has been preprocessed, normalized per pixel, and cropped to remove boundary artifacts. Each sequence has a shape of $3 \times 344 \times 224 \times 461$ ($\text{Channel} \times H \times W \times \text{Seq len}$). 
+
+To load the pretrained models, first navigate to the model directory and download the required checkpoints from google drive: 
+```
+cd src/models_earthauqkes
+```
+Then, load the corresponding models for dense and sparse input sampling scenarios:
+```
+from AEConvLEM_sparse import AEConvLEM_sparse
+from AEConvLEM_dense import AEConvLEM_dense
+
+all_sample = len(np.load('filtered_coord.npy'))
+real_sample = len(np.load('shakealert_coords.npy'))
+mask_ratio = 1. - real_sample/all_sample
+
+sparse_model = AEConvLEM_sparse(dt=1, num_channels=3, num_kernels=144, 
+            kernel_size=(3, 3), padding=(1, 1), activation="tanh", 
+            frame_size=(43,28),mask_mode=1, mask_ratio=mask_ratio)
+
+dense_model = AEConvLEM_dense(dt=1, num_channels=3, num_kernels=144, 
+            kernel_size=(3, 3), padding=(1, 1), activation="tanh", 
+            frame_size=(43,28))
+
+# Load checkpoint
+state_dict_sprase = torch.load("checkpoints/best_lem_irr_mask_shakealert_.pt", map_location=torch.device('cuda'))
+state_dict_dense = torch.load("checkpoints/best_lem_dense_.pt", map_location=torch.device('cuda'))
+
+# # Remove 'module.' saved after data parallel
+state_dict_sprase = {k.replace("module.", ""): v for k, v in state_dict_sprase.items()}
+state_dict_dense = {k.replace("module.", ""): v for k, v in state_dict_dense.items()}
+
+# # Load into model
+sparse_model.load_state_dict(state_dict_sprase)
+dense_model.load_state_dict(state_dict_dense)
+```
 
 
 ## Model Structure

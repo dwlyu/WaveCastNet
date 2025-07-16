@@ -2,7 +2,7 @@ import torch
 import math
 from torch import nn
 from torch.nn import functional as F
-from .EncoderDecoder import encoder_sparser
+from EncoderDecoder import encoder_sparser
 import numpy as np
 
 class SelfAttention(nn.Module):
@@ -118,7 +118,7 @@ class Encoder1d(nn.Module):
                                nn.LeakyReLU(), 
                                nn.BatchNorm1d(3))
         self.encoder = encoder_sparser(num_channel = 3)
-        self.Attention=Attention1D(3)
+        # self.Attention=Attention1D(3)
         
     def mask(self,input,space_only_mask = None):
         if self.mask_mode:

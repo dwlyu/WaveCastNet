@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 import numpy as np
-from .ConvLEMCell import ConvLEMCell_1
-from .EncoderDecoder import encoder1
-from .EncoderDecoder import decoder2_48
+from ConvLEMCell import ConvLEMCell_1
+from EncoderDecoder import encoder1
+from EncoderDecoder import decoder2_48
 
 # Seq2Seq(ConvLEM) for dense sampling scenarios
 
